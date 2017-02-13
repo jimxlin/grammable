@@ -65,6 +65,7 @@ RSpec.describe GramsController, type: :controller do
       sign_in user
 
       post :create, params: { gram: { message: ''} }
+
       expect(response).to have_http_status(:unprocessable_entity)
       expect(Gram.count).to eq(0)
     end
@@ -74,7 +75,6 @@ RSpec.describe GramsController, type: :controller do
     it "should successfully show the edit form if the gram is found" do
       gram = FactoryGirl.create(:gram)
       sign_in gram.user
-
       get :edit, params: { id: gram.id }
       expect(response).to have_http_status(:success)
     end
@@ -91,6 +91,7 @@ RSpec.describe GramsController, type: :controller do
       sign_in user
 
       get :edit, params: { id: gram.id }
+
       expect(response).to have_http_status(:forbidden)
     end
 
@@ -106,6 +107,7 @@ RSpec.describe GramsController, type: :controller do
       sign_in gram.user
 
       patch :update, params: { id: gram.id, gram: { message: 'New Value' } }
+
       expect(response).to redirect_to root_path
       gram.reload
       expect(gram.message).to eq "New Value"
@@ -123,6 +125,7 @@ RSpec.describe GramsController, type: :controller do
       sign_in user
 
       patch :update, params: { id: gram.id, gram: { message: 'New Value' } }
+
       expect(response).to have_http_status(:forbidden)
     end
 
@@ -130,7 +133,6 @@ RSpec.describe GramsController, type: :controller do
     it "should return a 404 if the gram is not found" do
       user = FactoryGirl.create(:user)
       sign_in user
-
       patch :update, params: { id: 'NOTANID', gram: { message: 'New Value' } }
       expect(response).to have_http_status(:not_found)
     end
@@ -140,6 +142,7 @@ RSpec.describe GramsController, type: :controller do
       sign_in gram.user
 
       patch :update, params: { id: gram.id, gram: { message: '' } }
+
       expect(response).to have_http_status(:unprocessable_entity)
       gram.reload
       expect(gram.message).to eq "Initial Value"
@@ -152,6 +155,7 @@ RSpec.describe GramsController, type: :controller do
       sign_in gram.user
 
       delete :destroy, params: { id: gram.id }
+
       expect(response).to redirect_to root_path
       gram = Gram.find_by_id(gram.id)
       expect(gram).to eq nil
@@ -169,13 +173,13 @@ RSpec.describe GramsController, type: :controller do
       sign_in user
 
       delete :destroy, params: { id: gram.id }
+
       expect(response).to have_http_status(:forbidden)
     end
 
     it "should return a 404 if the id is not in the gram db" do
       user = FactoryGirl.create(:user)
       sign_in user
-
       delete :destroy, params: { id: 'NOTANID' }
       expect(response).to have_http_status(:not_found)
     end
